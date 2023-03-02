@@ -40,6 +40,15 @@ logger = logging.getLogger(__name__)
 for orientation in ExifTags.TAGS.keys():
     if ExifTags.TAGS[orientation] == 'Orientation':
         break
+def get_weighted_samples(labels: np.array, upsampled_class: int = 1) -> List:
+   filtered_dataset = list(filter(lambda item: (item[:, 0] == upsampled_class).any(), labels))
+   percent = len(filtered_dataset) / len(labels)
+
+   weights = [percent if (item[:, 0] == upsampled_class).any() else 1-percent for item in labels]
+   weights = np.array(weights)
+
+   sampler=WeightedRandomSampler(torch.from_numpy(weights),len(weights))
+   return sampler
 
 
 def get_hash(files):
@@ -79,7 +88,7 @@ def create_dataloader(path, imgsz, batch_size, stride, opt, hyp=None, augment=Fa
 
     batch_size = min(batch_size, len(dataset))
     nw = min([os.cpu_count() // world_size, batch_size if batch_size > 1 else 0, workers])  # number of workers
-    sampler = torch.utils.data.distributed.DistributedSampler(dataset) if rank != -1 else None
+    sampler = get_weighted_samples(labels= dataset.labels, upsampled_class= 1)
     loader = torch.utils.data.DataLoader if image_weights else InfiniteDataLoader
     # Use torch.utils.data.DataLoader() if dataset.properties will update during training else InfiniteDataLoader()
     dataloader = loader(dataset,
