@@ -40,8 +40,6 @@ logger = logging.getLogger(__name__)
 for orientation in ExifTags.TAGS.keys():
     if ExifTags.TAGS[orientation] == 'Orientation':
         break
-
-
 def get_hash(files):
     # Returns a single hash value of a list of files
     return sum(os.path.getsize(f) for f in files if os.path.isfile(f))
