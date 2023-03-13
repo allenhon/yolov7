@@ -231,6 +231,7 @@ def labels_to_class_weights(labels, nc=2):
     weights /= weights.sum()  # normalize
     print ("labels_to_class_weights:",weights[0])
     print ("labels_to_class_weights_labels:",labels[0])
+    print ("labels_to_class_weights_labels:",len(labels))
     return torch.from_numpy(weights)
 
 
