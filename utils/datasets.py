@@ -77,6 +77,7 @@ def create_dataloader(path, imgsz, batch_size, stride, opt, hyp=None, augment=Fa
     filtered=len(list(filter(lambda item: item.shape[0]>0, dataset.labels)))
 
     percent = filtered / len(dataset.labels)
+    print (percent)
 
     # percent is 0.01 in my case(?)
 
@@ -84,6 +85,7 @@ def create_dataloader(path, imgsz, batch_size, stride, opt, hyp=None, augment=Fa
     print ("length of dataset.labels", len(dataset.labels))
     weights = np.array(weights)
     print ("length of weights:",len(weights))
+    print (weights)
 
     # sampler=WeightedRandomSampler(torch.from_numpy(weights),len(weights))
     batch_size = min(batch_size, len(dataset))
