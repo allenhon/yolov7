@@ -229,8 +229,8 @@ def labels_to_class_weights(labels, nc=2):
     weights[weights == 0] = 1  # replace empty bins with 1
     weights = 1 / weights  # number of targets per class
     weights /= weights.sum()  # normalize
-    print ("labels_to_class_weights:",weights)
-    print ("labels_to_class_weights_labels:",labels)
+    print ("labels_to_class_weights:",weights[0])
+    print ("labels_to_class_weights_labels:",labels[0])
     return torch.from_numpy(weights)
 
 
