@@ -93,21 +93,13 @@ def create_dataloader(path, imgsz, batch_size, stride, opt, hyp=None, augment=Fa
     print ("labels_to_class_weights dataset.py:",weights)
     print ("labels_to_class_weights_labels dataset.py:",labels[0])
     print ("labels_to_class_weights_labels dataset.py:",len(labels))
-    
-    # filtered=len(list(filter(lambda item: item.shape[0]>0, dataset.labels)))
+    sample_weights=[0]*len(labels)
 
-    # percent = filtered / len(dataset.labels)
-    # print (percent)
-
-    # # percent is 0.01 in my case(?)
-
-    # weights = [percent if item.shape[0]==0 else 1-percent for item in dataset.labels]
-    # print ("length of dataset.labels", len(dataset.labels))
-    # weights = np.array(weights)
-    # print ("length of weights:",len(weights))
-    # print (weights)
-
-    sampler=WeightedRandomSampler(torch.from_numpy(weights),41, replacement=True)
+    for idx, (data,label) in enumerate(dataset):
+        class_weight=weights[label]
+        sample_weights[idx]=class_weight
+    print (sample_weights)
+    sampler=WeightedRandomSampler(sample_weights,len(sample_weights), replacement=True)
     print (sampler)
     batch_size = min(batch_size, len(dataset))
     nw = min([os.cpu_count() // world_size, batch_size if batch_size > 1 else 0, workers])  # number of workers
