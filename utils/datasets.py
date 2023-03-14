@@ -74,8 +74,8 @@ def create_dataloader(path, imgsz, batch_size, stride, opt, hyp=None, augment=Fa
                                       pad=pad,
                                       image_weights=image_weights,
                                       prefix=prefix)
-    class_weights = labels_to_class_weights(dataset.labels, 2)
-    print (class_weights)
+    # class_weights = labels_to_class_weights(dataset.labels, 2)
+    # print (class_weights)
     
     filtered=len(list(filter(lambda item: item.shape[0]==0, dataset.labels)))
 
