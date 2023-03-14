@@ -96,6 +96,7 @@ def create_dataloader(path, imgsz, batch_size, stride, opt, hyp=None, augment=Fa
     sample_weights=[]
     # print (dataset.labels)
     for all_labels in dataset.labels:
+        print ('length of all labels:',len(all_labels))
         for image_label in all_labels:
             # print (image_label[0])
             if image_label[0] == 0:
