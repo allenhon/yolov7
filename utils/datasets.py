@@ -104,7 +104,7 @@ def create_dataloader(path, imgsz, batch_size, stride, opt, hyp=None, augment=Fa
     # for idx, label in enumerate(dataset):
     #     class_weight=weights[label]
     #     sample_weights[idx]=class_weight
-    print (sample_weights)
+    # print (sample_weights)
     # sampler=WeightedRandomSampler(sample_weights,len(sample_weights), replacement=True)
     # print (sampler)
     batch_size = min(batch_size, len(dataset))
