@@ -97,13 +97,14 @@ def create_dataloader(path, imgsz, batch_size, stride, opt, hyp=None, augment=Fa
     # print (dataset.labels)
     for all_labels in dataset.labels:
         for image_label in all_labels:
-            print (image_label[0])
+            # print (image_label[0])
             if image_label[0] == 0:
                 print ("first index 0")
                 sample_weights.append(weights[0])
             else:
                 print ('first index 1')
                 sample_weights.append(weights[1])
+                print (weights[1])
     print (len(sample_weights))
     # for idx, label in enumerate(dataset):
     #     class_weight=weights[label]
