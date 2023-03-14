@@ -17,8 +17,7 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 from PIL import Image, ExifTags
-from torch.utils.data import Dataset, WeightedRandomSampler
-from torch.utils.data import Dataset, WeightedRandomSampler
+from torch.utils.data import Dataset
 from tqdm import tqdm
 
 import pickle
@@ -28,9 +27,9 @@ from torchvision.utils import save_image
 from torchvision.ops import roi_pool, roi_align, ps_roi_pool, ps_roi_align
 
 from utils.general import check_requirements, xyxy2xywh, xywh2xyxy, xywhn2xyxy, xyn2xy, segment2box, segments2boxes, \
-    resample_segments, clean_str, labels_to_class_weights
+    resample_segments, clean_str
 from utils.torch_utils import torch_distributed_zero_first
-from models.yolo import Model
+
 # Parameters
 help_url = 'https://github.com/ultralytics/yolov5/wiki/Train-Custom-Data'
 img_formats = ['bmp', 'jpg', 'jpeg', 'png', 'tif', 'tiff', 'dng', 'webp', 'mpo']  # acceptable image suffixes
