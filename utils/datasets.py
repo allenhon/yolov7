@@ -17,7 +17,7 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 from PIL import Image, ExifTags
-from torch.utils.data import Dataset
+from torch.utils.data import Dataset, WeightedRandomSampler
 from tqdm import tqdm
 
 import pickle
@@ -91,20 +91,20 @@ def create_dataloader(path, imgsz, batch_size, stride, opt, hyp=None, augment=Fa
     print ("labels_to_class_weights_labels dataset.py:",labels[0])
     print ("labels_to_class_weights_labels dataset.py:",len(labels))
     
-    filtered=len(list(filter(lambda item: item.shape[0]>0, dataset.labels)))
+    # filtered=len(list(filter(lambda item: item.shape[0]>0, dataset.labels)))
 
-    percent = filtered / len(dataset.labels)
-    print (percent)
+    # percent = filtered / len(dataset.labels)
+    # print (percent)
 
-    # percent is 0.01 in my case(?)
+    # # percent is 0.01 in my case(?)
 
-    weights = [percent if item.shape[0]==0 else 1-percent for item in dataset.labels]
-    print ("length of dataset.labels", len(dataset.labels))
-    weights = np.array(weights)
-    print ("length of weights:",len(weights))
-    print (weights)
+    # weights = [percent if item.shape[0]==0 else 1-percent for item in dataset.labels]
+    # print ("length of dataset.labels", len(dataset.labels))
+    # weights = np.array(weights)
+    # print ("length of weights:",len(weights))
+    # print (weights)
 
-    # sampler=WeightedRandomSampler(torch.from_numpy(weights),len(weights))
+    sampler=WeightedRandomSampler(torch.from_numpy(weights),len(labels))
     batch_size = min(batch_size, len(dataset))
     nw = min([os.cpu_count() // world_size, batch_size if batch_size > 1 else 0, workers])  # number of workers
     # print ('Rank before sampler:', rank)
