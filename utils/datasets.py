@@ -94,10 +94,11 @@ def create_dataloader(path, imgsz, batch_size, stride, opt, hyp=None, augment=Fa
     print ("labels_to_class_weights_labels dataset.py:",labels[0])
     print ("labels_to_class_weights_labels dataset.py:",len(labels))
     sample_weights=[0]*len(labels)
-    # print (dataset)
-    for idx, label in enumerate(dataset):
-        class_weight=weights[label]
-        sample_weights[idx]=class_weight
+    print (dataset.labels)
+
+    # for idx, label in enumerate(dataset):
+    #     class_weight=weights[label]
+    #     sample_weights[idx]=class_weight
     print (sample_weights)
     # sampler=WeightedRandomSampler(sample_weights,len(sample_weights), replacement=True)
     # print (sampler)
