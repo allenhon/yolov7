@@ -111,8 +111,8 @@ def create_dataloader(path, imgsz, batch_size, stride, opt, hyp=None, augment=Fa
     # sample_weights=np.array(sample_weights)
     # sample_weights=torch.from_numpy(sample_weights)
     # sample_weights=sample_weights.double()
-    
-    sampler=WeightedRandomSampler(torch.from_numpy(weights),4, replacement=True)
+
+    sampler=WeightedRandomSampler(torch.from_numpy(weights),40, replacement=True)
 
     #https://discuss.pytorch.org/t/how-to-use-weightedrandomsampler-for-imbalanced-data/110578 WeightedRandomSampler assigns a weight to each sample nto the class labels
     # print (sampler)
