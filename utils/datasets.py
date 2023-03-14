@@ -82,11 +82,14 @@ def create_dataloader(path, imgsz, batch_size, stride, opt, hyp=None, augment=Fa
     # Prepend gridpoint count (for uCE training)
     # gpi = ((320 / 32 * np.array([1, 2, 4])) ** 2 * 3).sum()  # gridpoints per image
     # weights = np.hstack([gpi * len(labels)  - weights.sum() * 9, weights * 9]) ** 0.5  # prepend gridpoints to start
-
+    print ("weights before replace empty bins with 1:", weights)
     weights[weights == 0] = 1  # replace empty bins with 1
+    print ("weights in between no. of targets:", weights)
     weights = 1 / weights  # number of targets per class
+    print ("weights before normalizing:", weights)
     weights /= weights.sum()  # normalize
     print ("classes from dataset.py",classes)
+    print ("No. of classes from dataset.py",len(classes))
     print ("labels_to_class_weights dataset.py:",weights)
     print ("labels_to_class_weights_labels dataset.py:",labels[0])
     print ("labels_to_class_weights_labels dataset.py:",len(labels))
@@ -104,7 +107,7 @@ def create_dataloader(path, imgsz, batch_size, stride, opt, hyp=None, augment=Fa
     # print ("length of weights:",len(weights))
     # print (weights)
 
-    sampler=WeightedRandomSampler(torch.from_numpy(weights),len(labels), replacement=True)
+    sampler=WeightedRandomSampler(torch.from_numpy(weights),len(weights), replacement=True)
     batch_size = min(batch_size, len(dataset))
     nw = min([os.cpu_count() // world_size, batch_size if batch_size > 1 else 0, workers])  # number of workers
     # print ('Rank before sampler:', rank)
