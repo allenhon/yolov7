@@ -99,18 +99,20 @@ def create_dataloader(path, imgsz, batch_size, stride, opt, hyp=None, augment=Fa
         for image_label in all_labels:
             # print (image_label[0])
             if image_label[0] == 0:
-                print ("first index 0")
+                # print ("first index 0")
                 sample_weights.append(weights[0])
             else:
-                print ('first index 1')
+                # print ('first index 1')
                 sample_weights.append(weights[1])
-                print (weights[1])
+                # print (weights[1])
     print (len(sample_weights))
+
+    print (sample_weights)
     # for idx, label in enumerate(dataset):
     #     class_weight=weights[label]
     #     sample_weights[idx]=class_weight
     # print (sample_weights)
-    sampler=WeightedRandomSampler(sample_weights,len(sample_weights), replacement=True)
+    sampler=WeightedRandomSampler(torch.from_numpy(sample_weights),len(sample_weights), replacement=True)
     # print (sampler)
     batch_size = min(batch_size, len(dataset))
     nw = min([os.cpu_count() // world_size, batch_size if batch_size > 1 else 0, workers])  # number of workers
