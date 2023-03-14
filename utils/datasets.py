@@ -93,30 +93,28 @@ def create_dataloader(path, imgsz, batch_size, stride, opt, hyp=None, augment=Fa
     print ("labels_to_class_weights dataset.py:",weights)
     print ("labels_to_class_weights_labels dataset.py:",labels[0])
     print ("labels_to_class_weights_labels dataset.py:",len(labels))
-    sample_weights=[]
-    # print (dataset.labels)
-    for all_labels in dataset.labels:
-        print ('length of all labels:',len(all_labels))
-        for image_label in all_labels:
-            # print (image_label[0])
-            if image_label[0] == 0:
-                # print ("first index 0")
-                sample_weights.append(weights[0])
-            else:
-                # print ('first index 1')
-                sample_weights.append(weights[1])
-                # print (weights[1])
-    print (len(sample_weights))
+    # sample_weights=[]
+    # # print (dataset.labels)
+    # for all_labels in dataset.labels:
+    #     print ('length of all labels:',len(all_labels))
+    #     for image_label in all_labels:
+    #         # print (image_label[0])
+    #         if image_label[0] == 0:
+    #             # print ("first index 0")
+    #             sample_weights.append(weights[0])
+    #         else:
+    #             # print ('first index 1')
+    #             sample_weights.append(weights[1])
+    #             # print (weights[1])
+    # print (len(sample_weights))
 
-    # print (sample_weights)
-    # for idx, label in enumerate(dataset):
-    #     class_weight=weights[label]
-    #     sample_weights[idx]=class_weight
-    # print (sample_weights)
-    sample_weights=np.array(sample_weights)
-    sample_weights=torch.from_numpy(sample_weights)
-    sample_weights=sample_weights.double()
-    sampler=WeightedRandomSampler(sample_weights,len(sample_weights), replacement=True)
+    # sample_weights=np.array(sample_weights)
+    # sample_weights=torch.from_numpy(sample_weights)
+    # sample_weights=sample_weights.double()
+    
+    sampler=WeightedRandomSampler(torch.from_numpy(weights),4, replacement=True)
+
+    #https://discuss.pytorch.org/t/how-to-use-weightedrandomsampler-for-imbalanced-data/110578 WeightedRandomSampler assigns a weight to each sample nto the class labels
     # print (sampler)
     batch_size = min(batch_size, len(dataset))
     nw = min([os.cpu_count() // world_size, batch_size if batch_size > 1 else 0, workers])  # number of workers
