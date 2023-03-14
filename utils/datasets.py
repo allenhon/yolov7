@@ -107,11 +107,12 @@ def create_dataloader(path, imgsz, batch_size, stride, opt, hyp=None, augment=Fa
                 # print (weights[1])
     print (len(sample_weights))
 
-    print (sample_weights)
+    # print (sample_weights)
     # for idx, label in enumerate(dataset):
     #     class_weight=weights[label]
     #     sample_weights[idx]=class_weight
     # print (sample_weights)
+    sample_weights=np.array(sample_weights)
     sampler=WeightedRandomSampler(torch.from_numpy(sample_weights),len(sample_weights), replacement=True)
     # print (sampler)
     batch_size = min(batch_size, len(dataset))
