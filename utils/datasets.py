@@ -108,6 +108,7 @@ def create_dataloader(path, imgsz, batch_size, stride, opt, hyp=None, augment=Fa
     # print (weights)
 
     sampler=WeightedRandomSampler(torch.from_numpy(weights),41, replacement=True)
+    print (sampler)
     batch_size = min(batch_size, len(dataset))
     nw = min([os.cpu_count() // world_size, batch_size if batch_size > 1 else 0, workers])  # number of workers
     # print ('Rank before sampler:', rank)
