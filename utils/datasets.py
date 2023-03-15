@@ -83,11 +83,14 @@ def create_dataloader(path, imgsz, batch_size, stride, opt, hyp=None, augment=Fa
     temp_classes = [(label[:, 0]) for label in dataset.labels]
     print ('temp_classes:',temp_classes)
     output_classes=[]
+
     for image_labels in temp_classes:
+        temp_list=[]
         for label in image_labels:
-            temp_list=[]
             temp_list.append((label,))
-        output_classes.append(temp_list)
+        mlb_class=MultiLabelBinarizer()
+        mlb_class=mlb_class.fit_transform(temp_list)
+        output_classes.append(mlb_class)
     # output_classes = [(item,) for label in temp_classes for item in label]
     print ('output class:',output_classes)
     print ('Len output classes:',len(output_classes))
@@ -111,9 +114,8 @@ def create_dataloader(path, imgsz, batch_size, stride, opt, hyp=None, augment=Fa
     print ('dataset len:',len(dataset))
     temp_class=list(classes)
     # print (temp_class)
-    mlb_class=MultiLabelBinarizer()
-    mlb_class=mlb_class.fit_transform(output_classes)
-    print(mlb_class)
+
+
     print ('len mlb_class:',len(mlb_class))
     indices = list(range(len(labels)))
     # print ('indices',indices)
