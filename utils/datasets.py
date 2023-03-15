@@ -77,44 +77,44 @@ def create_dataloader(path, imgsz, batch_size, stride, opt, hyp=None, augment=Fa
                                       pad=pad,
                                       image_weights=image_weights,
                                       prefix=prefix)
-    print (dataset.labels)
-    print('length of dataset.labels',len(dataset.labels))
-    labels = np.concatenate(dataset.labels, 0)  # labels.shape = (866643, 5) for COCO
-    temp_classes = [(label[:, 0]) for label in dataset.labels]
-    print ('temp_classes:',temp_classes)
-    output_classes = [(item,) for item in temp_classes]
-    print ('output class',output_classes)
-    print ('Len output classes:',len(output_classes))
-    classes = labels[:, 0].astype(np.int)  # labels = [class xywh]
-    weights = np.bincount(classes, minlength=2)  # occurrences per class
+    # print (dataset.labels)
+    # print('length of dataset.labels',len(dataset.labels))
+    # labels = np.concatenate(dataset.labels, 0)  # labels.shape = (866643, 5) for COCO
+    # temp_classes = [(label[:, 0]) for label in dataset.labels]
+    # print ('temp_classes:',temp_classes)
+    # output_classes = [(item,) for item in temp_classes]
+    # print ('output class',output_classes)
+    # print ('Len output classes:',len(output_classes))
+    # classes = labels[:, 0].astype(np.int)  # labels = [class xywh]
+    # weights = np.bincount(classes, minlength=2)  # occurrences per class
 
-    # Prepend gridpoint count (for uCE training)
-    # gpi = ((320 / 32 * np.array([1, 2, 4])) ** 2 * 3).sum()  # gridpoints per image
-    # weights = np.hstack([gpi * len(labels)  - weights.sum() * 9, weights * 9]) ** 0.5  # prepend gridpoints to start
-    print ("weights before replace empty bins with 1:", weights)
-    weights[weights == 0] = 1  # replace empty bins with 1
-    print ("weights in between no. of targets:", weights)
-    weights = 1 / weights  # number of targets per class
-    print ("weights before normalizing:", weights)
-    weights /= weights.sum()  # normalize
-    print ("classes from dataset.py",classes)
-    print ("No. of classes from dataset.py",len(classes))
-    print ("labels_to_class_weights dataset.py:",weights)
-    print ("labels_to_class_weights_labels dataset.py:",labels[0])
-    print ("labels_to_class_weights_labels dataset.py:",len(labels))
-    print ('dataset len:',len(dataset))
-    temp_class=list(classes)
-    # print (temp_class)
-    mlb_class=MultiLabelBinarizer()
-    mlb_class=mlb_class.fit_transform(output_classes)
-    print(mlb_class)
-    print ('len mlb_class:',len(mlb_class))
-    indices = list(range(len(labels)))
-    # print ('indices',indices)
-    print ('len indices',len(indices))
-    multilabel_sampler=MultilabelBalancedRandomSampler(
-        mlb_class, indices, class_choice="least_sampled"
-    )
+    # # Prepend gridpoint count (for uCE training)
+    # # gpi = ((320 / 32 * np.array([1, 2, 4])) ** 2 * 3).sum()  # gridpoints per image
+    # # weights = np.hstack([gpi * len(labels)  - weights.sum() * 9, weights * 9]) ** 0.5  # prepend gridpoints to start
+    # print ("weights before replace empty bins with 1:", weights)
+    # weights[weights == 0] = 1  # replace empty bins with 1
+    # print ("weights in between no. of targets:", weights)
+    # weights = 1 / weights  # number of targets per class
+    # print ("weights before normalizing:", weights)
+    # weights /= weights.sum()  # normalize
+    # print ("classes from dataset.py",classes)
+    # print ("No. of classes from dataset.py",len(classes))
+    # print ("labels_to_class_weights dataset.py:",weights)
+    # print ("labels_to_class_weights_labels dataset.py:",labels[0])
+    # print ("labels_to_class_weights_labels dataset.py:",len(labels))
+    # print ('dataset len:',len(dataset))
+    # temp_class=list(classes)
+    # # print (temp_class)
+    # mlb_class=MultiLabelBinarizer()
+    # mlb_class=mlb_class.fit_transform(output_classes)
+    # print(mlb_class)
+    # print ('len mlb_class:',len(mlb_class))
+    # indices = list(range(len(labels)))
+    # # print ('indices',indices)
+    # print ('len indices',len(indices))
+    # multilabel_sampler=MultilabelBalancedRandomSampler(
+    #     mlb_class, indices, class_choice="least_sampled"
+    # )
     # sample_weights=[]
     # # print (dataset.labels)
     # for all_labels in dataset.labels:
@@ -134,7 +134,7 @@ def create_dataloader(path, imgsz, batch_size, stride, opt, hyp=None, augment=Fa
     # sample_weights=torch.from_numpy(sample_weights)
     # sample_weights=sample_weights.double()
 
-    sampler=WeightedRandomSampler(torch.from_numpy(weights),4, replacement=True)
+    # sampler=WeightedRandomSampler(torch.from_numpy(weights),4, replacement=True)
 
     ##https://discuss.pytorch.org/t/how-to-use-weightedrandomsampler-for-imbalanced-data/110578 WeightedRandomSampler assigns a weight to each sample nto the class labels
     ##trying this https://github.com/issamemari/pytorch-multilabel-balanced-sampler
@@ -142,13 +142,13 @@ def create_dataloader(path, imgsz, batch_size, stride, opt, hyp=None, augment=Fa
     batch_size = min(batch_size, len(dataset))
     nw = min([os.cpu_count() // world_size, batch_size if batch_size > 1 else 0, workers])  # number of workers
     # print ('Rank before sampler:', rank)
-    # sampler = torch.utils.data.distributed.DistributedSampler(dataset) if rank != -1 else None
+    sampler = torch.utils.data.distributed.DistributedSampler(dataset) if rank != -1 else None
     loader = torch.utils.data.DataLoader if image_weights else InfiniteDataLoader
     # Use torch.utils.data.DataLoader() if dataset.properties will update during training else InfiniteDataLoader()
     dataloader = loader(dataset,
                         batch_size=batch_size,
                         num_workers=nw,
-                        sampler=multilabel_sampler,
+                        sampler=sampler,
                         pin_memory=True,
                         collate_fn=LoadImagesAndLabels.collate_fn4 if quad else LoadImagesAndLabels.collate_fn)
     return dataloader, dataset
