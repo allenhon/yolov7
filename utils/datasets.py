@@ -107,7 +107,7 @@ def create_dataloader(path, imgsz, batch_size, stride, opt, hyp=None, augment=Fa
     mlb_class=mlb_class.fit_transform(output_classes)
     print(mlb_class)
     indices = list(range(len(labels)))
-    print ('indices',indices)
+    # print ('indices',indices)
     print ('len indices',len(indices))
     multilabel_sampler=MultilabelBalancedRandomSampler(
         mlb_class, indices, class_choice="least_sampled"
@@ -145,7 +145,7 @@ def create_dataloader(path, imgsz, batch_size, stride, opt, hyp=None, augment=Fa
     dataloader = loader(dataset,
                         batch_size=batch_size,
                         num_workers=nw,
-                        sampler=multilabel_sampler,
+                        batch_sampler=multilabel_sampler,
                         pin_memory=True,
                         collate_fn=LoadImagesAndLabels.collate_fn4 if quad else LoadImagesAndLabels.collate_fn)
     return dataloader, dataset
