@@ -108,6 +108,8 @@ def create_dataloader(path, imgsz, batch_size, stride, opt, hyp=None, augment=Fa
     print(mlb_class)
     print(mlb_class.classes_)
     indices = list(range(len(labels)))
+    print ('indices',indices)
+    print ('len indices',len(indices))
     multilabel_sampler=MultilabelBalancedRandomSampler(
         mlb_class, indices, class_choice="least_sampled"
     )
