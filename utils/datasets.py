@@ -150,47 +150,47 @@ def create_dataloader(path, imgsz, batch_size, stride, opt, hyp=None, augment=Fa
     # sample_weights=torch.from_numpy(sample_weights)
     # sample_weights=sample_weights.double()
 
-    labels_per_class = [label[:, 0].tolist() for label in dataset.labels if label.shape[0] > 0]
-    # flatten 2d array into 1d: https://stackoverflow.com/questions/29244286/how-to-flatten-a-2d-list-to-1d-without-using-numpy
-    labels_per_class = [j for sub in labels_per_class for j in sub]
+    # labels_per_class = [label[:, 0].tolist() for label in dataset.labels if label.shape[0] > 0]
+    # # flatten 2d array into 1d: https://stackoverflow.com/questions/29244286/how-to-flatten-a-2d-list-to-1d-without-using-numpy
+    # labels_per_class = [j for sub in labels_per_class for j in sub]
 
-    labels_per_class = np.array(labels_per_class)
+    # labels_per_class = np.array(labels_per_class)
 
-    background_count = len([1 for label in dataset.labels if label.shape[0] == 0])
+    # # background_count = len([1 for label in dataset.labels if label.shape[0] == 0])
 
-    unique_classes, counts = np.unique(labels_per_class, return_counts=True)
+    # unique_classes, counts = np.unique(labels_per_class, return_counts=True)
 
-    # = counts / (np.sum(counts) + background_count)
-    # normalized_background = background_count / (np.sum(counts) + background_count)
+    # # = counts / (np.sum(counts) + background_count)
+    # # normalized_background = background_count / (np.sum(counts) + background_count)
 
-    weight_cls = 1 / counts
+    # weight_cls = 1 / counts
 
-    # create a dictionary for the weight of each class
-    weight_dict = {}
-    for _cls, weight in zip(unique_classes, weight_cls):
-        weight_dict[_cls] = weight
+    # # create a dictionary for the weight of each class
+    # weight_dict = {}
+    # for _cls, weight in zip(unique_classes, weight_cls):
+    #     weight_dict[_cls] = weight
 
-    weight_background = 1 / background_count
+    # weight_background = 1 / 3051
 
-    final_weights = []
-    for label in dataset.labels:
-        if label.shape[0] == 0:
-            final_weights.append(weight_background)
-        else:
-            # use weighted sum of labels for weight in case there are multiple labels for the same image
-            label_classes = np.unique(label[:, 0]).tolist()
-            values = []
-            for cls_ in label_classes:
-                values.append(weight_dict[cls_])
+    # final_weights = []
+    # for label in dataset.labels:
+    #     if label.shape[0] == 0:
+    #         final_weights.append(weight_background)
+    #     else:
+    #         # use weighted sum of labels for weight in case there are multiple labels for the same image
+    #         label_classes = np.unique(label[:, 0]).tolist()
+    #         values = []
+    #         for cls_ in label_classes:
+    #             values.append(weight_dict[cls_])
 
-            final_weights.append(sum(values) / len(values))
+    #         final_weights.append(sum(values) / len(values))
 
-    final_weights = np.array(final_weights)
-    print ('Final Weights:',final_weights)
+    # final_weights = np.array(final_weights)
+    # print ('Final Weights:',final_weights)
     ## you can set the num_samples argument to anything. It basically changes your iteration count in every epoch
 
     ##https://github.com/ultralytics/yolov5/pull/8766/files
-    sampler=WeightedRandomSampler(torch.from_numpy(final_weights),num_samples=len(final_weights))
+    # sampler=WeightedRandomSampler(torch.from_numpy(final_weights),num_samples=len(final_weights))
 
     ##https://discuss.pytorch.org/t/how-to-use-weightedrandomsampler-for-imbalanced-data/110578 WeightedRandomSampler assigns a weight to each sample nto the class labels
     ##trying this https://github.com/issamemari/pytorch-multilabel-balanced-sampler
@@ -198,7 +198,7 @@ def create_dataloader(path, imgsz, batch_size, stride, opt, hyp=None, augment=Fa
     batch_size = min(batch_size, len(dataset))
     nw = min([os.cpu_count() // world_size, batch_size if batch_size > 1 else 0, workers])  # number of workers
     # print ('Rank before sampler:', rank)
-    # sampler = torch.utils.data.distributed.DistributedSampler(dataset) if rank != -1 else None
+    sampler = torch.utils.data.distributed.DistributedSampler(dataset) if rank != -1 else None
     loader = torch.utils.data.DataLoader if image_weights else InfiniteDataLoader
     # Use torch.utils.data.DataLoader() if dataset.properties will update during training else InfiniteDataLoader()
     dataloader = loader(dataset,
