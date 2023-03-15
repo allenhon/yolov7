@@ -77,22 +77,25 @@ def create_dataloader(path, imgsz, batch_size, stride, opt, hyp=None, augment=Fa
                                       pad=pad,
                                       image_weights=image_weights,
                                       prefix=prefix)
-    print (dataset.labels)
-    print('length of dataset.labels',len(dataset.labels))
-    labels = np.concatenate(dataset.labels, 0)  # labels.shape = (866643, 5) for COCO
-    temp_classes = [(label[:, 0]) for label in dataset.labels]
-    print ('temp_classes:',temp_classes)
-    output_classes=[]
+    # print (dataset.labels)
+    # print('length of dataset.labels',len(dataset.labels))
+    # labels = np.concatenate(dataset.labels, 0)  # labels.shape = (866643, 5) for COCO
+    # temp_classes = [(label[:, 0]) for label in dataset.labels]
+    # print ('temp_classes:',temp_classes)
+    # output_classes=[]
 
-    for image_labels in temp_classes:
-        temp_list=[]
-        for label in image_labels:
-            temp_list.append((label,))
-        mlb_class=MultiLabelBinarizer()
-        mlb_class=mlb_class.fit_transform(temp_list)
-        output_classes.append(mlb_class)
+    # for image_labels in temp_classes:
+    #     temp_list=[]
+    #     for label in image_labels:
+    #         temp_list.append((label,))
+    #     mlb_class=MultiLabelBinarizer()
+    #     mlb_class=mlb_class.fit_transform(temp_list)
+    #     output_classes.append(mlb_class)
     # output_classes = [(item,) for label in temp_classes for item in label]
-    print ('output class:',output_classes)
+    labels = np.concatenate(dataset.labels, 0)  # labels.shape = (866643, 5) for COCO
+    temp_classes = labels[:, 0]
+    output_classes = [(item,) for item in temp_classes]
+    # print ('output class',output_classes)
     print ('Len output classes:',len(output_classes))
     classes = labels[:, 0].astype(np.int)  # labels = [class xywh]
     weights = np.bincount(classes, minlength=2)  # occurrences per class
@@ -111,17 +114,18 @@ def create_dataloader(path, imgsz, batch_size, stride, opt, hyp=None, augment=Fa
     print ("labels_to_class_weights dataset.py:",weights)
     print ("labels_to_class_weights_labels dataset.py:",labels[0])
     print ("labels_to_class_weights_labels dataset.py:",len(labels))
-    print ('dataset len:',len(dataset))
-    temp_class=list(classes)
+
+    # temp_class=list(classes)
     # print (temp_class)
-
-
-    print ('len mlb_class:',len(mlb_class))
+    mlb_class=MultiLabelBinarizer()
+    mlb_class=mlb_class.fit_transform(output_classes)
+    print(mlb_class)
+    print(mlb_class.classes_)
     indices = list(range(len(labels)))
-    # print ('indices',indices)
+    print ('indices',indices)
     print ('len indices',len(indices))
     multilabel_sampler=MultilabelBalancedRandomSampler(
-        output_classes, indices, class_choice="least_sampled"
+        mlb_class, indices, class_choice="least_sampled"
     )
     # sample_weights=[]
     # # print (dataset.labels)
