@@ -181,7 +181,7 @@ def create_dataloader(path, imgsz, batch_size, stride, opt, hyp=None, augment=Fa
             label_classes = np.unique(label[:, 0]).tolist()
             values = []
             for cls_ in label_classes:
-                values.append(weight_dict[_cls])
+                values.append(weight_dict[cls_])
 
             final_weights.append(sum(values) / len(values))
 
