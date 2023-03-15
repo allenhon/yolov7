@@ -100,7 +100,7 @@ def create_dataloader(path, imgsz, batch_size, stride, opt, hyp=None, augment=Fa
     temp_class=list(classes)
     print (temp_class)
     mlb_class=MultiLabelBinarizer()
-    mlb_class=mlb_class.fit_transform(temp_class)
+    mlb_class=mlb_class.fit_transform([temp_class])
     print(mlb_class)
     # indices = list(range(len(labels)))
     # multilabel_sampler=MultilabelBalancedRandomSampler(
