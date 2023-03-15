@@ -77,7 +77,7 @@ def create_dataloader(path, imgsz, batch_size, stride, opt, hyp=None, augment=Fa
                                       pad=pad,
                                       image_weights=image_weights,
                                       prefix=prefix)
-    
+    print (dataset.labels)
     labels = np.concatenate(dataset.labels, 0)  # labels.shape = (866643, 5) for COCO
     temp_classes = labels[:, 0]
     output_classes = [(item,) for item in temp_classes]
@@ -100,7 +100,7 @@ def create_dataloader(path, imgsz, batch_size, stride, opt, hyp=None, augment=Fa
     print ("labels_to_class_weights dataset.py:",weights)
     print ("labels_to_class_weights_labels dataset.py:",labels[0])
     print ("labels_to_class_weights_labels dataset.py:",len(labels))
-    print ('dataset len',len(dataset))
+    print ('dataset len:',len(dataset))
     temp_class=list(classes)
     # print (temp_class)
     mlb_class=MultiLabelBinarizer()
