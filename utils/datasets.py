@@ -97,8 +97,10 @@ def create_dataloader(path, imgsz, batch_size, stride, opt, hyp=None, augment=Fa
     print ("labels_to_class_weights_labels dataset.py:",labels[0])
     print ("labels_to_class_weights_labels dataset.py:",len(labels))
 
+    temp_class=list(classes)
+    print (temp_class)
     mlb_class=MultiLabelBinarizer()
-    mlb_class=mlb_class.fit_transform(np.array(classes))
+    mlb_class=mlb_class.fit_transform(temp_class)
     print(mlb_class)
     # indices = list(range(len(labels)))
     # multilabel_sampler=MultilabelBalancedRandomSampler(
