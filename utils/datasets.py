@@ -81,8 +81,8 @@ def create_dataloader(path, imgsz, batch_size, stride, opt, hyp=None, augment=Fa
     labels = np.concatenate(dataset.labels, 0)  # labels.shape = (866643, 5) for COCO
     temp_classes = labels[:, 0]
     output_classes = [(item,) for item in temp_classes]
-    print ('output class',output_classes)
-    print (len(output_classes))
+    # print ('output class',output_classes)
+    print ('Len output classes:',len(output_classes))
     classes = labels[:, 0].astype(np.int)  # labels = [class xywh]
     weights = np.bincount(classes, minlength=2)  # occurrences per class
 
@@ -106,10 +106,11 @@ def create_dataloader(path, imgsz, batch_size, stride, opt, hyp=None, augment=Fa
     mlb_class=MultiLabelBinarizer()
     mlb_class=mlb_class.fit_transform(output_classes)
     print(mlb_class)
-    # indices = list(range(len(labels)))
-    # multilabel_sampler=MultilabelBalancedRandomSampler(
-    #     mlb_class, indices, class_choice="least_sampled"
-    # )
+    print(mlb_class.classes_)
+    indices = list(range(len(labels)))
+    multilabel_sampler=MultilabelBalancedRandomSampler(
+        mlb_class, indices, class_choice="least_sampled"
+    )
     # sample_weights=[]
     # # print (dataset.labels)
     # for all_labels in dataset.labels:
@@ -143,7 +144,7 @@ def create_dataloader(path, imgsz, batch_size, stride, opt, hyp=None, augment=Fa
     dataloader = loader(dataset,
                         batch_size=batch_size,
                         num_workers=nw,
-                        sampler=sampler,
+                        sampler=multilabel_sampler,
                         pin_memory=True,
                         collate_fn=LoadImagesAndLabels.collate_fn4 if quad else LoadImagesAndLabels.collate_fn)
     return dataloader, dataset
