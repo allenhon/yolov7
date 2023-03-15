@@ -78,6 +78,7 @@ def create_dataloader(path, imgsz, batch_size, stride, opt, hyp=None, augment=Fa
                                       image_weights=image_weights,
                                       prefix=prefix)
     print (dataset.labels)
+    print('length of dataset.labels',len(dataset.labels))
     labels = np.concatenate(dataset.labels, 0)  # labels.shape = (866643, 5) for COCO
     temp_classes = labels[:, 0]
     output_classes = [(item,) for item in temp_classes]
