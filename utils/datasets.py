@@ -30,6 +30,9 @@ from utils.general import check_requirements, xyxy2xywh, xywh2xyxy, xywhn2xyxy, 
     resample_segments, clean_str
 from utils.torch_utils import torch_distributed_zero_first
 
+from sklearn.preprocessing import MultiLabelBinarizer
+from sampler import MultilabelBalancedRandomSampler
+
 # Parameters
 help_url = 'https://github.com/ultralytics/yolov5/wiki/Train-Custom-Data'
 img_formats = ['bmp', 'jpg', 'jpeg', 'png', 'tif', 'tiff', 'dng', 'webp', 'mpo']  # acceptable image suffixes
@@ -93,6 +96,14 @@ def create_dataloader(path, imgsz, batch_size, stride, opt, hyp=None, augment=Fa
     print ("labels_to_class_weights dataset.py:",weights)
     print ("labels_to_class_weights_labels dataset.py:",labels[0])
     print ("labels_to_class_weights_labels dataset.py:",len(labels))
+
+    mlb_class=MultiLabelBinarizer()
+    mlb_class=mlb_class.fit_transform(classes)
+    print(mlb_class)
+    # indices = list(range(len(labels)))
+    # multilabel_sampler=MultilabelBalancedRandomSampler(
+    #     mlb_class, indices, class_choice="least_sampled"
+    # )
     # sample_weights=[]
     # # print (dataset.labels)
     # for all_labels in dataset.labels:
