@@ -80,9 +80,10 @@ def create_dataloader(path, imgsz, batch_size, stride, opt, hyp=None, augment=Fa
     print (dataset.labels)
     print('length of dataset.labels',len(dataset.labels))
     labels = np.concatenate(dataset.labels, 0)  # labels.shape = (866643, 5) for COCO
-    temp_classes = labels[:, 0]
+    temp_classes = [(label[:, 0]) for label in dataset.labels]
+    print ('temp_classes:',temp_classes)
     output_classes = [(item,) for item in temp_classes]
-    # print ('output class',output_classes)
+    print ('output class',output_classes)
     print ('Len output classes:',len(output_classes))
     classes = labels[:, 0].astype(np.int)  # labels = [class xywh]
     weights = np.bincount(classes, minlength=2)  # occurrences per class
