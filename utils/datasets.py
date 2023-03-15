@@ -100,12 +100,13 @@ def create_dataloader(path, imgsz, batch_size, stride, opt, hyp=None, augment=Fa
     print ("labels_to_class_weights dataset.py:",weights)
     print ("labels_to_class_weights_labels dataset.py:",labels[0])
     print ("labels_to_class_weights_labels dataset.py:",len(labels))
-
+    print ('dataset len',len(dataset))
     temp_class=list(classes)
     # print (temp_class)
     mlb_class=MultiLabelBinarizer()
     mlb_class=mlb_class.fit_transform(output_classes)
     print(mlb_class)
+    print ('len mlb_class:',mlb_class)
     indices = list(range(len(labels)))
     # print ('indices',indices)
     print ('len indices',len(indices))
@@ -145,7 +146,7 @@ def create_dataloader(path, imgsz, batch_size, stride, opt, hyp=None, augment=Fa
     dataloader = loader(dataset,
                         batch_size=batch_size,
                         num_workers=nw,
-                        batch_sampler=multilabel_sampler,
+                        sampler=multilabel_sampler,
                         pin_memory=True,
                         collate_fn=LoadImagesAndLabels.collate_fn4 if quad else LoadImagesAndLabels.collate_fn)
     return dataloader, dataset
