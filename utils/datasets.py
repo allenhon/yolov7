@@ -79,6 +79,8 @@ def create_dataloader(path, imgsz, batch_size, stride, opt, hyp=None, augment=Fa
                                       prefix=prefix)
     
     labels = np.concatenate(dataset.labels, 0)  # labels.shape = (866643, 5) for COCO
+    temp_classes = labels[:, 0]
+    print (temp_classes)
     classes = labels[:, 0].astype(np.int)  # labels = [class xywh]
     weights = np.bincount(classes, minlength=2)  # occurrences per class
 
@@ -97,10 +99,10 @@ def create_dataloader(path, imgsz, batch_size, stride, opt, hyp=None, augment=Fa
     print ("labels_to_class_weights_labels dataset.py:",labels[0])
     print ("labels_to_class_weights_labels dataset.py:",len(labels))
 
-    temp_class=list(str(classes))
-    print (temp_class)
+    temp_class=list(classes)
+    # print (temp_class)
     mlb_class=MultiLabelBinarizer()
-    mlb_class=mlb_class.fit_transform([temp_class])
+    # mlb_class=mlb_class.fit_transform([temp_class])
     print(mlb_class)
     # indices = list(range(len(labels)))
     # multilabel_sampler=MultilabelBalancedRandomSampler(
@@ -127,7 +129,8 @@ def create_dataloader(path, imgsz, batch_size, stride, opt, hyp=None, augment=Fa
 
     sampler=WeightedRandomSampler(torch.from_numpy(weights),4, replacement=True)
 
-    #https://discuss.pytorch.org/t/how-to-use-weightedrandomsampler-for-imbalanced-data/110578 WeightedRandomSampler assigns a weight to each sample nto the class labels
+    ##https://discuss.pytorch.org/t/how-to-use-weightedrandomsampler-for-imbalanced-data/110578 WeightedRandomSampler assigns a weight to each sample nto the class labels
+    ##trying this https://github.com/issamemari/pytorch-multilabel-balanced-sampler
     # print (sampler)
     batch_size = min(batch_size, len(dataset))
     nw = min([os.cpu_count() // world_size, batch_size if batch_size > 1 else 0, workers])  # number of workers
