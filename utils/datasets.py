@@ -120,7 +120,7 @@ def create_dataloader(path, imgsz, batch_size, stride, opt, hyp=None, augment=Fa
     mlb_class=MultiLabelBinarizer()
     mlb_class=mlb_class.fit_transform(output_classes)
     print(mlb_class)
-    print(mlb_class.classes_)
+    print('len mlb class',len(mlb_class))
     indices = list(range(len(labels)))
     print ('indices',indices)
     print ('len indices',len(indices))
