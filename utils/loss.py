@@ -562,6 +562,7 @@ class ComputeLossOTA:
 
         # Define criteria
         BCEcls = nn.BCEWithLogitsLoss(pos_weight=torch.tensor([h['cls_pw']], device=device))
+        print("torch.tensor cls_pw:",torch.tensor([h['cls_pw']], device=device))
         print ("BCEcls:",BCEcls)
         BCEobj = nn.BCEWithLogitsLoss(pos_weight=torch.tensor([h['obj_pw']], device=device))
 
