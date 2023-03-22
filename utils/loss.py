@@ -120,7 +120,7 @@ class SigmoidBin(nn.Module):
 
 class FocalLoss(nn.Module):
     # Wraps focal loss around existing loss_fcn(), i.e. criteria = FocalLoss(nn.BCEWithLogitsLoss(), gamma=1.5)
-    def __init__(self, loss_fcn, gamma=1.5, alpha=0.25): #original alpha=0.25
+    def __init__(self, loss_fcn, gamma=1.5, alpha=0.75): #original alpha=0.25
         super(FocalLoss, self).__init__()
         self.loss_fcn = loss_fcn  # must be nn.BCEWithLogitsLoss()
         self.gamma = gamma
@@ -425,7 +425,7 @@ class ComputeLoss:
         super(ComputeLoss, self).__init__()
         device = next(model.parameters()).device  # get model device
         h = model.hyp  # hyperparameters
-
+        print ('ComputeLoss Triggered')
         # Define criteria
         BCEcls = nn.BCEWithLogitsLoss(pos_weight=torch.tensor([h['cls_pw']], device=device))
         BCEobj = nn.BCEWithLogitsLoss(pos_weight=torch.tensor([h['obj_pw']], device=device))
@@ -559,10 +559,11 @@ class ComputeLossOTA:
         super(ComputeLossOTA, self).__init__()
         device = next(model.parameters()).device  # get model device
         h = model.hyp  # hyperparameters
+        print ('ComputeLossOTA Triggered')
 
         # Define criteria
         # BCEcls = nn.BCEWithLogitsLoss(pos_weight=torch.tensor([h['cls_pw']], device=device))
-        BCEcls = nn.BCEWithLogitsLoss(pos_weight=torch.tensor([0.00018091,0.99982], device=device))
+        BCEcls = nn.BCEWithLogitsLoss(weight=torch.tensor([0.00018091,0.99982], device=device),reduction='None')
         print("torch.tensor cls_pw:",torch.tensor([0.00018091,0.99982], device=device))
         print ("BCEcls:",BCEcls)
         BCEobj = nn.BCEWithLogitsLoss(pos_weight=torch.tensor([h['obj_pw']], device=device))
