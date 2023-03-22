@@ -562,9 +562,9 @@ class ComputeLossOTA:
         print ('ComputeLossOTA Triggered')
 
         # Define criteria
-        # BCEcls = nn.BCEWithLogitsLoss(pos_weight=torch.tensor([h['cls_pw']], device=device))
-        BCEcls = nn.BCEWithLogitsLoss(pos_weight=torch.tensor([0.00018091,0.99982], device=device))
-        print("torch.tensor cls_pw:",torch.tensor([0.00018091,0.99982], device=device))
+        BCEcls = nn.BCEWithLogitsLoss(pos_weight=torch.tensor([h['cls_pw']], device=device))
+        # BCEcls = nn.BCEWithLogitsLoss(pos_weight=torch.tensor([0.00018091,0.99982], device=device))
+        # print("torch.tensor cls_pw:",torch.tensor([0.00018091,0.99982], device=device))
         print ("BCEcls:",BCEcls)
         BCEobj = nn.BCEWithLogitsLoss(pos_weight=torch.tensor([h['obj_pw']], device=device))
 
