@@ -565,8 +565,8 @@ class ComputeLossOTA:
         # Define criteria
         BCEcls = nn.BCEWithLogitsLoss(pos_weight=torch.tensor([h['cls_pw']], device=device))
         # BCEcls = nn.BCEWithLogitsLoss(pos_weight=torch.tensor([0.00018091,0.99982], device=device))
-        print("torch.tensor cls_pw:",torch.tensor([0.00018091,0.99982], device=device))
-        print ("BCEcls:",BCEcls)
+        # print("torch.tensor cls_pw:",torch.tensor([0.00018091,0.99982], device=device))
+        # print ("BCEcls:",BCEcls)
         BCEobj = nn.BCEWithLogitsLoss(pos_weight=torch.tensor([h['obj_pw']], device=device))
 
         # Class label smoothing https://arxiv.org/pdf/1902.04103.pdf eqn 3
